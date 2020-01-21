@@ -1,0 +1,24 @@
+<html ng-app="gardener">
+    <head>
+        <title>die Gartensensorik</title>
+        <link rel="stylesheet" type="text/css" href="styling.css">
+        <script src="angular.min.js"></script>
+        <script src="app.js"></script>
+
+    </head>
+    <body>
+        <h3>Current Endpoints</h3>
+        <ul>
+            <li><a href='/humidities'>/humidities/&lt;max_number (opt)&gt;</a></li>
+        </ul>
+        <h4>Latest Humidity Values</h4>
+        <table ng-controller="HumController">
+            <tr ng-repeat="hum in humidities.values">
+                <td>{{hum.data}}</td>
+                <td>{{hum.timestamp}}</td>
+            </tr>
+        </table>
+        <h4>General Wisdom</h4>
+    <div ng-controller="AnotherController">The answer to all imaginable questions is {{magic_number}}</div>
+    </body>
+</html>

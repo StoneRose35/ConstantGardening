@@ -4,3 +4,4 @@ CREATE USER 'mira'@'localhost' IDENTIFIED BY 'amelie';
 GRANT ALL PRIVILEGES ON gardening.* TO 'mira'@'localhost';
 FLUSH PRIVILEGES;
 CREATE TABLE humidity (id INT(6) AUTO_INCREMENT PRIMARY KEY,value INTEGER,timestamp DATETIME);
+CREATE TABLE brightness (id INT(6) AUTO_INCREMENT PRIMARY KEY,value INTEGER,timestamp DATETIME);

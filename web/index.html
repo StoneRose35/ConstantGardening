@@ -10,12 +10,20 @@
         <h3>Current Endpoints</h3>
         <ul>
             <li><a href='/humidities'>/humidities/&lt;max_number (opt)&gt;</a></li>
+            <li><a href='/brightnesses'>/brightnesses/&lt;max_number (opt)&gt;</a></li>
         </ul>
         <h4>Latest Humidity Values</h4>
         <table ng-controller="HumController">
             <tr ng-repeat="hum in humidities.values">
                 <td>{{hum.data}}</td>
                 <td>{{hum.timestamp}}</td>
+            </tr>
+        </table>
+        <h4>Latest Brightness Values</h4>
+        <table ng-controller="BrightnessController">
+            <tr ng-repeat="bn in brightnesses.values">
+                <td>{{bn.data}}</td>
+                <td>{{bn.timestamp}}</td>
             </tr>
         </table>
         <h4>General Wisdom</h4>

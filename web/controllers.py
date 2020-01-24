@@ -41,34 +41,38 @@ class DbAccessor:
         self.db.commit()
 
     def get_humidity_values(self, max_values=None, t_start=None, t_end=None):
-        stmt = "select value, timestamp from humidity {} order by timestamp DESC "
-        whereclause = ""
+        stmt = "select value, timestamp from humidity {} order by timestamp ASC "
+        whereclause = " WHERE "
         cur = self.db.cursor()
         if max_values is not None:
             stmt += "LIMIT {}".format(int(max_values))
 
         if t_start is not None and isinstance(t_start, datetime.datetime):
-            whereclause += "timestamp>=" + "'" + t_start.strftime("%y-%M-%d %h:%m:%s") + "' "
+            whereclause += "timestamp>=" + "'" + t_start.strftime("%Y-%m-%d %H:%M:%S") + "' "
         if t_end is not None and isinstance(t_end, datetime.datetime):
             if len(whereclause) > 0:
                 whereclause += " AND "
-            whereclause += "timestamp<=" + "'" + t_end.strftime("%y-%M-%d %h:%m:%s") + "' "
+            whereclause += "timestamp<=" + "'" + t_end.strftime("%Y-%m-%d %H:%M:%S") + "' "
+        if whereclause == " WHERE ":
+            whereclause = ""
         cur.execute(stmt.format(whereclause))
         return cur.fetchall()
 
     def get_brightness_values(self, max_values=None, t_start=None, t_end=None):
         stmt = "select value, timestamp from brightness order by timestamp DESC "
-        whereclause = ""
+        whereclause = " WHERE "
         cur = self.db.cursor()
         if max_values is not None:
             stmt += "LIMIT {}".format(int(max_values))
 
         if t_start is not None and isinstance(t_start, datetime.datetime):
-            whereclause += "timestamp>=" + "'" + t_start.strftime("%y-%M-%d %h:%m:%s") + "' "
+            whereclause += "timestamp>=" + "'" + t_start.strftime("%Y-%m-%d %H:%M:%S") + "' "
         if t_end is not None and isinstance(t_end, datetime.datetime):
             if len(whereclause) > 0:
                 whereclause += " AND "
-            whereclause += "timestamp<=" + "'" + t_end.strftime("%y-%M-%d %h:%m:%s") + "' "
+            whereclause += "timestamp<=" + "'" + t_end.strftime("%Y-%m-%d %H:%M:%S") + "' "
+        if whereclause == " WHERE ":
+            whereclause = ""
         cur.execute(stmt.format(whereclause))
         return cur.fetchall()
 

@@ -8,6 +8,12 @@ class TimeTaggedValue:
         self.timestamp = datetime.datetime.now()
         self.val = val
 
+    def __str__(self):
+        return "{} on {}".format(self.val,self.timestamp)
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class DbAccessor:
     def __init__(self):
@@ -34,25 +40,38 @@ class DbAccessor:
         cur.execute(stmt, (val.val, val.timestamp))
         self.db.commit()
 
-    def get_humidity_values(self, max_values=None):
-        stmt = "select value, timestamp from humidity order by timestamp DESC "
+    def get_humidity_values(self, max_values=None, t_start=None, t_end=None):
+        stmt = "select value, timestamp from humidity {} order by timestamp DESC "
+        whereclause = ""
         cur = self.db.cursor()
         if max_values is not None:
-            stmt += "LIMIT %s"
-            cur.execute(stmt, (max_values,))
-        else:
-            cur.execute(stmt)
+            stmt += "LIMIT {}".format(int(max_values))
+
+        if t_start is not None and isinstance(t_start, datetime.datetime):
+            whereclause += "timestamp>=" + "'" + t_start.strftime("%y-%M-%d %h:%m:%s") + "' "
+        if t_end is not None and isinstance(t_end, datetime.datetime):
+            if len(whereclause) > 0:
+                whereclause += " AND "
+            whereclause += "timestamp<=" + "'" + t_end.strftime("%y-%M-%d %h:%m:%s") + "' "
+        cur.execute(stmt.format(whereclause))
         return cur.fetchall()
 
-    def get_brightness_values(self, max_values=None):
+    def get_brightness_values(self, max_values=None, t_start=None, t_end=None):
         stmt = "select value, timestamp from brightness order by timestamp DESC "
+        whereclause = ""
         cur = self.db.cursor()
         if max_values is not None:
-            stmt += "LIMIT %s"
-            cur.execute(stmt, (max_values,))
-        else:
-            cur.execute(stmt)
+            stmt += "LIMIT {}".format(int(max_values))
+
+        if t_start is not None and isinstance(t_start, datetime.datetime):
+            whereclause += "timestamp>=" + "'" + t_start.strftime("%y-%M-%d %h:%m:%s") + "' "
+        if t_end is not None and isinstance(t_end, datetime.datetime):
+            if len(whereclause) > 0:
+                whereclause += " AND "
+            whereclause += "timestamp<=" + "'" + t_end.strftime("%y-%M-%d %h:%m:%s") + "' "
+        cur.execute(stmt.format(whereclause))
         return cur.fetchall()
+
 
 class SensorController:
 

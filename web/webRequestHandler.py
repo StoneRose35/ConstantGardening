@@ -1,9 +1,14 @@
 import http.server
 import controllers
 import json
+import matplotlib.pyplot as plt
+import datetime
 
 
 class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
+
+    def __init__(self):
+        self.db_accessor == controllers.DbAccessor()
 
     def do_GET(self):
         if hasattr(self, "db_accessor") is False:
@@ -102,8 +107,6 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
         else:
             self.send_404()
 
-
-
     def send_404(self):
         self.send_response(404)
         self.send_header('Content-type', 'text/html')
@@ -120,3 +123,6 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
         </body>
         </html>
         """.format(self.path).encode("utf-8"))
+
+    def generate_temporal_plot(self,t_start: datetime.datetime, t_end: datetime.datetime):
+        pass

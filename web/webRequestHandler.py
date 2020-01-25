@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import datetime
 from io import BytesIO
 
+
 class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def __init__(self, request, client_address, server):
@@ -62,76 +63,56 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.send_404()
 
         elif self.path.startswith("/humidities"):
-            max_elements = None
-            t_start = None
-            t_end = None
-            plot = 0
-            args = self.path_to_arg_dict()
-            ctype = ""
-            if "max_elements" in args:
-                max_elements = int(args["max_elements"])
-            if "t_start" in args:
-                t_start = datetime.datetime.strptime(args["t_start"], "%Y%m%d%H%M%S")
-            if "t_end" in args:
-                t_end = datetime.datetime.strptime(args["t_end"], "%Y%m%d%H%M%S")
-            if "plot" in args:
-                plot = 1
-            try:
-                if plot == 0:
-                    hum_vals = self.db_accessor.get_humidity_values(max_elements, t_start, t_end)
-                    vals_array = []
-                    for hv in hum_vals:
-                        vals_array.append({'data': hv[0], 'timestamp': hv[1].__str__()})
-                    json_vals = {'values': vals_array}
-                    msg = json.dumps(json_vals).encode("utf-8")
-                    ctype = "application/json"
-                else:
-                    r_data = self.generate_temporal_plot(t_start, t_end)
-                    ctype = "image/png"
-                    msg = r_data.getvalue()
-                code = 200
-            except:
-                code = 500
-                msg = "{'error': 'database access error occurred during reading the humidity table'}".encode("utf-8")
-            self.send_response(code)
-            self.send_header('Content-type', ctype)
-            self.end_headers()
-            self.wfile.write(msg)
+            self.handle_data_request(controllers.TYPE_HUMIDITY)
 
         elif self.path.startswith("/brightnesses"):
-            max_elements = None
-            t_start = None
-            t_end = None
-            args = self.path_to_arg_dict()
-            if "max_elements" in args:
-                max_elements = int(args["max_elements"])
-            if "t_start" in args:
-                t_start = datetime.datetime.strptime(args["t_start"], "%Y%m%d%H%M%S")
-            if "t_end" in args:
-                t_end = datetime.datetime.strptime(args["t_end"], "%Y%m%d%H%M%S")
-            try:
-                br_vals = self.db_accessor.get_brightness_values(max_elements, t_start, t_end)
-                vals_array = []
-                for bv in br_vals:
-                    vals_array.append({'data': bv[0], 'timestamp': bv[1].__str__()})
-                json_vals = {'values': vals_array}
-                msg = json.dumps(json_vals)
-                code = 200
-            except:
-                code = 500
-                msg = "{'error': 'database access error occurred during reading the brightness table'}"
-            self.send_response(code)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(msg.encode("utf-8"))
+            self.handle_data_request(controllers.TYPE_BRIGHTNESS)
 
 
         else:
             self.send_404()
 
+    def handle_data_request(self, datatype):
+        max_elements = None
+        t_start = None
+        t_end = None
+        plot = 0
+        args = self.path_to_arg_dict()
+        ctype = ""
+        if "max_elements" in args:
+            max_elements = int(args["max_elements"])
+        if "t_start" in args:
+            t_start = datetime.datetime.strptime(args["t_start"], "%Y%m%d%H%M%S")
+        if "t_end" in args:
+            t_end = datetime.datetime.strptime(args["t_end"], "%Y%m%d%H%M%S")
+        if "plot" in args:
+            plot = 1
+        try:
+            if plot == 0:
+                hum_vals = self.db_accessor.get_values(datatype, max_elements, t_start, t_end)
+                vals_array = []
+                for hv in hum_vals:
+                    vals_array.append({'data': hv[0], 'timestamp': hv[1].__str__()})
+                json_vals = {'values': vals_array}
+                msg = json.dumps(json_vals).encode("utf-8")
+                ctype = "application/json"
+            else:
+                r_data = self.generate_temporal_plot(t_start, t_end, datatype)
+                ctype = "image/png"
+                msg = r_data.getvalue()
+            code = 200
+        except:
+            code = 500
+            msg = "{'error': 'database access error occurred during reading the {} table'}".format(datatype["tablename"]).encode("utf-8")
+        self.send_response(code)
+        self.send_header('Content-type', ctype)
+        self.end_headers()
+        self.wfile.write(msg)
+
     def send_404(self):
         self.send_response(404)
         self.send_header('Content-type', 'text/html')
+        self.end_headers()
         self.wfile.write("""
         <html>
         <head>
@@ -146,8 +127,8 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
         </html>
         """.format(self.path).encode("utf-8"))
 
-    def generate_temporal_plot(self,t_start: datetime.datetime, t_end: datetime.datetime):
-        vals = self.db_accessor.get_humidity_values(t_start=t_start, t_end=t_end)
+    def generate_temporal_plot(self, t_start: datetime.datetime, t_end: datetime.datetime, datatype):
+        vals = self.db_accessor.get_values(t_start=t_start, t_end=t_end, datatype=datatype)
         x = []
         y = []
         labels = []

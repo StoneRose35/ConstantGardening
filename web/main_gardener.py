@@ -7,7 +7,8 @@ import webRequestHandler
 
 app_is_running = True
 DELTA_T = 60
-PORT = 80
+PORT = 8080
+
 
 def log_data_values():
     dba = controllers.DbAccessor()
@@ -15,10 +16,10 @@ def log_data_values():
     while app_is_running is True:
         hum = sc.read_humidity()
         print("Humidity Value read is: {}".format(hum))
-        dba.insert_humidity_value(hum)
+        dba.insert_value(hum, controllers.TYPE_HUMIDITY)
         br = sc.read_brightness()
         print("brightness Value read is: {}".format(br))
-        dba.insert_brightness_value(br)
+        dba.insert_value(br, controllers.TYPE_BRIGHTNESS)
         for c in range(DELTA_T):
             time.sleep(1)
             if app_is_running is False:

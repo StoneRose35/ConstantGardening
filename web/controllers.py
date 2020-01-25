@@ -2,6 +2,8 @@ import smbus
 import datetime
 import pymysql
 
+TYPE_HUMIDITY = {"idx": 0, "tablename": "humidity"}
+TYPE_BRIGHTNESS = {"idx": 1, "tablename": "brightness"}
 
 class TimeTaggedValue:
     def __init__(self, val):
@@ -28,20 +30,14 @@ class DbAccessor:
         version = cur.fetchone()
         return version[0]
 
-    def insert_humidity_value(self, val: TimeTaggedValue):
+    def insert_value(self, val: TimeTaggedValue, datatype):
         cur = self.db.cursor()
-        stmt = "INSERT INTO humidity(value,timestamp) VALUES (%s,%s)"
+        stmt = "INSERT INTO {}(value,timestamp) VALUES (%s,%s)".format(datatype["tablename"])
         cur.execute(stmt, (val.val, val.timestamp))
         self.db.commit()
 
-    def insert_brightness_value(self, val: TimeTaggedValue):
-        cur = self.db.cursor()
-        stmt = "INSERT INTO brightness(value,timestamp) VALUES (%s,%s)"
-        cur.execute(stmt, (val.val, val.timestamp))
-        self.db.commit()
-
-    def get_humidity_values(self, max_values=None, t_start=None, t_end=None):
-        stmt = "select value, timestamp from humidity {} order by timestamp ASC "
+    def get_values(self, datatype, max_values=None, t_start=None, t_end=None):
+        stmt = "select value, timestamp from {} {} order by timestamp ASC "
         whereclause = " WHERE "
         cur = self.db.cursor()
         if max_values is not None:
@@ -55,25 +51,7 @@ class DbAccessor:
             whereclause += "timestamp<=" + "'" + t_end.strftime("%Y-%m-%d %H:%M:%S") + "' "
         if whereclause == " WHERE ":
             whereclause = ""
-        cur.execute(stmt.format(whereclause))
-        return cur.fetchall()
-
-    def get_brightness_values(self, max_values=None, t_start=None, t_end=None):
-        stmt = "select value, timestamp from brightness order by timestamp DESC "
-        whereclause = " WHERE "
-        cur = self.db.cursor()
-        if max_values is not None:
-            stmt += "LIMIT {}".format(int(max_values))
-
-        if t_start is not None and isinstance(t_start, datetime.datetime):
-            whereclause += "timestamp>=" + "'" + t_start.strftime("%Y-%m-%d %H:%M:%S") + "' "
-        if t_end is not None and isinstance(t_end, datetime.datetime):
-            if len(whereclause) > 0:
-                whereclause += " AND "
-            whereclause += "timestamp<=" + "'" + t_end.strftime("%Y-%m-%d %H:%M:%S") + "' "
-        if whereclause == " WHERE ":
-            whereclause = ""
-        cur.execute(stmt.format(whereclause))
+        cur.execute(stmt.format(datatype["tablename"], whereclause))
         return cur.fetchall()
 
 

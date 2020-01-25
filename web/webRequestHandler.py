@@ -151,8 +151,9 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
             lbl = [labels[x] for x in xt]
             ax.set_xticks(xt)
             ax.set_xticklabels([])
+            ax.set_ylim([0, 1024])
             for l in zip(xt, lbl):
-                plt.text(l[0], minval, l[1], rotation=90)
+                plt.text(l[0], 10, l[1], {'ha': 'left', 'va': 'bottom'}, rotation=90)
         else:
             plt.text(0.25, 0.5, "no data points to display", fontsize=24)
         fig.set_size_inches(10.24, 7.68)

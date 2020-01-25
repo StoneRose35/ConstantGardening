@@ -103,6 +103,7 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
             code = 200
         except:
             code = 500
+            ctype = "application/json"
             msg = "{{'error': 'database access error occurred during reading the {} table'}}".format(datatype["tablename"]).encode("utf-8")
         self.send_response(code)
         self.send_header('Content-type', ctype)

@@ -6,7 +6,7 @@ import webRequestHandler
 
 
 app_is_running = True
-DELTA_T = 60
+DELTA_T = 60*5
 PORT = 8080
 
 

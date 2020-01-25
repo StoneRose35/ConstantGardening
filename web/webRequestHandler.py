@@ -103,7 +103,7 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
             code = 200
         except:
             code = 500
-            msg = "{'error': 'database access error occurred during reading the {} table'}".format(datatype["tablename"]).encode("utf-8")
+            msg = "{{'error': 'database access error occurred during reading the {} table'}}".format(datatype["tablename"]).encode("utf-8")
         self.send_response(code)
         self.send_header('Content-type', ctype)
         self.end_headers()
@@ -140,17 +140,19 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
             cnt += 1
         fig = plt.figure()
         figdata = BytesIO()
-        plt.plot(x, y)
-        ax = plt.gca()
-        xt = [0, int(cnt/3), int(2*cnt/3), cnt-1]
-        lbl = [labels[x] for x in xt]
-        ax.set_xticks(xt)
-        ax.set_xticklabels([])
-        yl = ax.get_ylim()
-        for l in zip(xt, lbl):
-            plt.text(l[0], yl[0] + (yl[1]-yl[0])*0.03, l[1], rotation=90)
-
-            fig.set_size_inches(10.24, 7.68)
+        if cnt > 0:
+            plt.plot(x, y)
+            ax = plt.gca()
+            xt = [0, int(cnt/3), int(2*cnt/3), cnt-1]
+            lbl = [labels[x] for x in xt]
+            ax.set_xticks(xt)
+            ax.set_xticklabels([])
+            yl = ax.get_ylim()
+            for l in zip(xt, lbl):
+                plt.text(l[0], yl[0] + (yl[1]-yl[0])*0.03, l[1], rotation=90)
+        else:
+            plt.text(0.25, 0.5, "no data points to display", fontsize=24)
+        fig.set_size_inches(10.24, 7.68)
         fig.savefig(figdata, format="png", dpi=100)
         return figdata
 

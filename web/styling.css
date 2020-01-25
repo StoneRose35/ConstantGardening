@@ -1,3 +1,43 @@
 
-table { border-style: solid}
-td {border-style: solid}
+.gd_content {
+	position: absolute;
+	left: 220px;
+	top: 0px;
+}
+
+.gd_hidden {
+	display: none;
+}
+
+.gd_nav {
+	width: 200px;
+	background-color: #cccccc;
+	height: 100%;
+}
+
+.gd_nav_entry {
+	padding-top: 7px;
+	padding-bottom: 7px;
+	padding-left: 12px;
+	display: block;
+	font-size: 18px;
+}
+
+.gd_nav_entry:hover {
+	background-color: #99ff99;
+}
+
+p.gd_timelabel {
+	width: 100px;
+	display: inline-block;
+}
+
+ul.gd_nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gd_title {
+	font-size: 2em;
+}

@@ -1,32 +1,167 @@
 <html ng-app="gardener">
     <head>
         <title>die Gartensensorik</title>
+
+        <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.min.css"></link>
         <link rel="stylesheet" type="text/css" href="styling.css">
-        <script src="angular.min.js"></script>
+        <script src="jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+        <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
         <script src="app.js"></script>
+
+
 
     </head>
     <body>
-        <h3>Current Endpoints</h3>
-        <ul>
-            <li><a href='/humidities'>/humidities/&lt;max_number (opt)&gt;</a></li>
-            <li><a href='/brightnesses'>/brightnesses/&lt;max_number (opt)&gt;</a></li>
+        <div style="width: 200px" id="nav" class="gd_nav">
+            <ul class="gd_nav">
+
+            <li><a href="#" id="n_api" class="ui-widget gd_nav_entry">API / Endpoints</a></li>
+            <li><a href="#" id="n_brightness" class="ui-widget gd_nav_entry">Brightness</a></li>
+            <li><a href="#" id="n_humidity" class="ui-widget gd_nav_entry">Humidity</a></li>
         </ul>
-        <h4>Latest Humidity Values</h4>
-        <table ng-controller="HumController">
-            <tr ng-repeat="hum in humidities.values">
-                <td>{{hum.data}}</td>
-                <td>{{hum.timestamp}}</td>
-            </tr>
-        </table>
-        <h4>Latest Brightness Values</h4>
-        <table ng-controller="BrightnessController">
-            <tr ng-repeat="bn in brightnesses.values">
-                <td>{{bn.data}}</td>
-                <td>{{bn.timestamp}}</td>
-            </tr>
-        </table>
-        <h4>General Wisdom</h4>
-    <div ng-controller="AnotherController">The answer to all imaginable questions is {{magic_number}}</div>
+        </div>
+
+        <div id="t_api" class="gd_content">
+            <h1 class="ui-widget gd_title">Current Endpoints</h1>
+            <ul class="ui-widget">
+                <li><a href='/humidities'>/humidities?max_number=NN(opt)&plot(opt)&t_start=(2020-01-10 12:12:12 opt)&t_end=(2020-01-10 12:12:12 opt)</a></li>
+                <li><a href='/brightnesses'>/brightnesses?max_number=NN(opt)&plot(opt)&t_start=(2020-01-10 12:12:12 opt)&t_end=(2020-01-10 12:12:12 opt)</a></li>
+            </ul>
+        </div>
+        <div id="t_humidity" class="gd_content gd_hidden">
+            
+            <h1 class="ui-widget gd_title">
+                Humidity plot
+            </h1>
+            <div>
+             <p class="ui-widget gd_timelabel">Start Date: </p><input type="text" name="time_start" id="hp_t_start" />
+             <p class="ui-widget gd_timelabel">Hour: </p>
+    <select name="number" id="hp_h_start">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+      <option>11</option>
+      <option selected="selected">12</option>
+      <option>13</option>
+      <option>14</option>
+      <option>15</option>
+      <option>16</option>
+      <option>17</option>
+      <option>18</option>
+      <option>19</option>
+      <option>20</option>
+      <option>21</option>
+      <option>22</option>
+      <option>23</option>
+      <option>24</option>
+    </select>
+              </div>
+             <div>
+            <p class="ui-widget gd_timelabel">End Date: </p><input type="text" name="time_end" id="hp_t_end" />
+            <p class="ui-widget gd_timelabel">Hour: </p>
+                <select name="number" id="hp_h_end">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+      <option>11</option>
+      <option selected="selected">12</option>
+      <option>13</option>
+      <option>14</option>
+      <option>15</option>
+      <option>16</option>
+      <option>17</option>
+      <option>18</option>
+      <option>19</option>
+      <option>20</option>
+      <option>21</option>
+      <option>22</option>
+      <option>23</option>
+      <option>24</option>
+    </select>
+            </div>
+            <img src="humidities?plot&t_start=20200101000000&t_end=20210101000000" id="hp_plt"></img>
+            
+
+        </div>
+        <div id="t_brightness" class="gd_content gd_hidden">
+            <h1 class="ui-widget gd_title">
+                Brightness plot
+            </h1>
+            <div>
+             <p class="ui-widget gd_timelabel">Start Date: </p><input type="text" name="time_start" id="bp_t_start" /> 
+<p class="ui-widget gd_timelabel">Hour: </p>
+                <select name="number" id="bp_h_start">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+      <option>11</option>
+      <option selected="selected">12</option>
+      <option>13</option>
+      <option>14</option>
+      <option>15</option>
+      <option>16</option>
+      <option>17</option>
+      <option>18</option>
+      <option>19</option>
+      <option>20</option>
+      <option>21</option>
+      <option>22</option>
+      <option>23</option>
+      <option>24</option>
+    </select>
+         </div>
+             <div>
+            <p class="ui-widget gd_timelabel">End Date: </p><input type="text" name="time_end" id="bp_t_end" />
+            <p class="ui-widget gd_timelabel">Hour: </p>
+                <select name="number" id="bp_h_end">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+      <option>11</option>
+      <option selected="selected">12</option>
+      <option>13</option>
+      <option>14</option>
+      <option>15</option>
+      <option>16</option>
+      <option>17</option>
+      <option>18</option>
+      <option>19</option>
+      <option>20</option>
+      <option>21</option>
+      <option>22</option>
+      <option>23</option>
+      <option>24</option>
+    </select>
+            </div>
+            <img src="brightnesses?plot&t_start=20200101000000&t_end=20210101000000" id="bp_plt"></img>
+        </div>
     </body>
 </html>

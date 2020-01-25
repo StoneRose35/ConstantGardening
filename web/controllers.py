@@ -5,6 +5,8 @@ import pymysql
 TYPE_HUMIDITY = {"idx": 0, "tablename": "humidity"}
 TYPE_BRIGHTNESS = {"idx": 1, "tablename": "brightness"}
 
+DELTA_T = 60*5
+
 class TimeTaggedValue:
     def __init__(self, val):
         self.timestamp = datetime.datetime.now()

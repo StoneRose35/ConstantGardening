@@ -2,11 +2,10 @@ import controllers
 import time
 import http.server
 import threading
-import webRequestHandler
+import web_Serving
 
 
 app_is_running = True
-DELTA_T = 60*5
 PORT = 8080
 
 
@@ -20,7 +19,7 @@ def log_data_values():
         br = sc.read_brightness()
         #print("brightness Value read is: {}".format(br))
         dba.insert_value(br, controllers.TYPE_BRIGHTNESS)
-        for c in range(DELTA_T):
+        for c in range(controllers.DELTA_T):
             time.sleep(1)
             if app_is_running is False:
                 break
@@ -30,7 +29,7 @@ if __name__ == "__main__":
     data_logger = threading.Thread(target=log_data_values)
     data_logger.start()
     print("start data logger")
-    httpd = http.server.HTTPServer(("", PORT), webRequestHandler.GardeningRequestHandler)
+    httpd = web_Serving.GardeningWebServer(("", PORT), web_Serving.GardeningRequestHandler)
     try:
         print("happily serving gardening monitor data")
         httpd.serve_forever()

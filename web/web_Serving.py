@@ -6,15 +6,15 @@ import datetime
 from io import BytesIO
 
 
-class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
-
-    def __init__(self, request, client_address, server):
-        super().__init__(request, client_address, server)
+class GardeningWebServer(http.server.HTTPServer):
+    def __init__(self, server_address, RequestHandlerClass):
+        super().__init__(server_address, RequestHandlerClass)
         self.db_accessor = controllers.DbAccessor()
 
+
+class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
+
     def do_GET(self):
-        if hasattr(self, "db_accessor") is False:
-            self.db_accessor = controllers.DbAccessor()
 
         # Send the html message
         if self.path == "/":
@@ -89,7 +89,7 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
             plot = 1
         try:
             if plot == 0:
-                hum_vals = self.db_accessor.get_values(datatype, max_elements, t_start, t_end)
+                hum_vals = self.server.db_accessor.get_values(datatype, max_elements, t_start, t_end)
                 vals_array = []
                 for hv in hum_vals:
                     vals_array.append({'data': hv[0], 'timestamp': hv[1].__str__()})
@@ -129,7 +129,7 @@ class GardeningRequestHandler(http.server.BaseHTTPRequestHandler):
         """.format(self.path).encode("utf-8"))
 
     def generate_temporal_plot(self, t_start: datetime.datetime, t_end: datetime.datetime, datatype):
-        vals = self.db_accessor.get_values(t_start=t_start, t_end=t_end, datatype=datatype)
+        vals = self.server.db_accessor.get_values(t_start=t_start, t_end=t_end, datatype=datatype)
         x = []
         y = []
         labels = []

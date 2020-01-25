@@ -15,10 +15,10 @@ def log_data_values():
     sc = controllers.SensorController()
     while app_is_running is True:
         hum = sc.read_humidity()
-        print("Humidity Value read is: {}".format(hum))
+        #print("Humidity Value read is: {}".format(hum))
         dba.insert_value(hum, controllers.TYPE_HUMIDITY)
         br = sc.read_brightness()
-        print("brightness Value read is: {}".format(br))
+        #print("brightness Value read is: {}".format(br))
         dba.insert_value(br, controllers.TYPE_BRIGHTNESS)
         for c in range(DELTA_T):
             time.sleep(1)

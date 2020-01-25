@@ -121,4 +121,7 @@ $( "#bp_h_end" ).val(GdGetHours())
   .selectmenu( "menuWidget" )
     .addClass( "overflow" );
 
+GdRefreshPlot("humidities");
+GdRefreshPlot("brightnesses");
+
 });
